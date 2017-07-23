@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">PlacesDistanceApp</string>
+
+    <string name="lbl_start">Start</string>
+    <string name="lbl_stop">Stop</string>
+
+    <string name="msg_tracking">The application will track your movement even while in background.</string>
+    <string name="lbl_agree">Agree</string>
+    <string name="lbl_disagree">Disagree</string>
+</resources>
