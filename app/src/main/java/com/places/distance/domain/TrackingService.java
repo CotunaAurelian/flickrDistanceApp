@@ -38,6 +38,8 @@ public class TrackingService extends Service {
 
     private static PhotoSearchHandler sPhotoSearchHandler;
 
+    private LocationListener mLocationListener;
+
     private LocationManager mLocationManager = null;
 
 
@@ -72,11 +74,6 @@ public class TrackingService extends Service {
             Log.i(TAG, "onStatusChanged: " + provider);
         }
     }
-
-    LocationListener[] mLocationListeners = new LocationListener[]{
-            new LocationListener(LocationManager.GPS_PROVIDER),
-            new LocationListener(LocationManager.NETWORK_PROVIDER)
-    };
 
 
     @Override
@@ -124,11 +121,12 @@ public class TrackingService extends Service {
         }
 
         try {
+            mLocationListener = new LocationListener(LocationManager.NETWORK_PROVIDER);
             mLocationManager.requestLocationUpdates(
-                    LocationManager.GPS_PROVIDER,
+                    LocationManager.NETWORK_PROVIDER,
                     Constants.GPS_LOCATION_TIME_INTERVAL,
                     Constants.GPS_LOCATION_DISTANCE_INTERVAL,
-                    mLocationListeners[1]);
+                    mLocationListener);
             Log.i(TAG, "Location updates enabled");
 
         } catch (SecurityException ex) {
@@ -139,7 +137,7 @@ public class TrackingService extends Service {
         try {
             mLocationManager.requestLocationUpdates(
                     LocationManager.GPS_PROVIDER,
-                    Constants.GPS_LOCATION_TIME_INTERVAL, Constants.GPS_LOCATION_DISTANCE_INTERVAL, mLocationListeners[0]);
+                    Constants.GPS_LOCATION_TIME_INTERVAL, Constants.GPS_LOCATION_DISTANCE_INTERVAL, mLocationListener);
         } catch (SecurityException ex) {
             Log.i(TAG, "Failed to request location update ", ex);
         } catch (IllegalArgumentException ex) {
@@ -153,9 +151,8 @@ public class TrackingService extends Service {
         setTrackingStatus(false);
         Log.i(TAG, "Tracking stopped");
         if (mLocationManager != null) {
-            for (int listenerIndex = 0; listenerIndex < mLocationListeners.length; listenerIndex++) {
                 try {
-                    mLocationManager.removeUpdates(mLocationListeners[listenerIndex]);
+                    mLocationManager.removeUpdates(mLocationListener);
 
                 } catch (SecurityException exception) {
                     Log.i(TAG, "Failed to remove location listener, ignoring", exception);
@@ -163,7 +160,6 @@ public class TrackingService extends Service {
                     Log.i(TAG, "Failed to remove location listener, ignoring", exception);
                 }
             }
-        }
     }
 
 

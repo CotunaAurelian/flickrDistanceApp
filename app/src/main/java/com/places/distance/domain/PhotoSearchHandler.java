@@ -33,7 +33,7 @@ public class PhotoSearchHandler {
 
 
     public void searchForLocation(final double lat, final double lon) {
-        mClient.searchFor(lat, lon, 1, new OnPicturesParsedListener() {
+        mClient.searchFor(lat, lon, 20, new OnPicturesParsedListener() {
             @Override
             public void onSuccess(ArrayList<ImageData> results) {
                 mResultsCache.addAll(0, results);
